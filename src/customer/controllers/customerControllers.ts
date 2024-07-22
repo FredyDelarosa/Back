@@ -58,6 +58,11 @@ export const getAllCustumeractive  = async(req:Request,res:Response) => {
 export const deleteCustumer  = async(req:Request,res:Response) => {
     try {
         const {id} = req.params;
+
+        //Validaciones aun que no es correcto hacerlo de esta forma
+        if (!id) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
         const custumerDelete = await CustumerService.deleteCustumer(id);
         res.status(200).json(custumerDelete);
     } catch (error:any) {
@@ -68,9 +73,12 @@ export const deleteCustumer  = async(req:Request,res:Response) => {
 export const loginCustumer  = async(req:Request,res:Response) => {
     try {
         const {email,password} = req.body;
-        
+
+        if (!email||!password) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
         const login = await CustumerService.loginCustumer(email,password);
-        res.status(200).json(login);
+        res.status(201).json(login);
     } catch (error:any) {
         res.status(500).json({ error: error.message });
     }

@@ -18,7 +18,7 @@ export const tokenSigIn = (uuid:string, email:string ): string => {
         },
         process.env.KEY_TOKEN! || clavetoken!,
         {
-            expiresIn: '20m'
+            expiresIn: '72h'
         }
     );
 }
