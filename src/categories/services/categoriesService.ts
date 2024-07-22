@@ -39,4 +39,22 @@ export class CategoriaService{
             throw new Error(`Error al crear categorie: ${error.message}`);
         }
     }
+
+    public static async deleteCategories(id:string){
+        try {
+            return await CategorieRepository.deleteCategorie(id);
+
+        } catch (error:any) {
+            throw new Error(`Error al crear categorie: ${error.message}`);
+        }
+    }
+
+    public static async deleteCategoriesPermant(id:string){
+        try {
+            return await CategorieRepository.deleteCategoriePermant(id);
+
+        } catch (error:any) {
+            throw new Error(`Error al crear categorie: ${error.message}`);
+        }
+    }
 }

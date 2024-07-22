@@ -51,3 +51,22 @@ export const getAllCustumerActive = async(req:Request,res:Response) => {
     }
 }
 
+export const deleteCategories = async(req:Request,res:Response) => {
+    try {
+        const {id} = req.params
+        const deleteCategories = await CategoriaService.deleteCategories(id);
+        res.status(200).json(deleteCategories);
+    } catch (error:any) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export const deleteCategoriesPermant = async(req:Request,res:Response) => {
+    try {
+        const {id} = req.params
+        const deleteCategories = await CategoriaService.deleteCategoriesPermant(id);
+        res.status(200).json(deleteCategories);
+    } catch (error:any) {
+        res.status(500).json({ error: error.message });
+    }
+}

@@ -1,4 +1,5 @@
 import { query } from "../../database/mysql";
+import { deleteCategories } from "../controllers/categoriesController";
 import { Categories } from "../models/categories";
 
 export class CategorieRepository{
@@ -35,6 +36,7 @@ export class CategorieRepository{
             throw new Error(`Error creating categorie: ${error.message}`);
         }
     }
+
     public static async updateCategorie(id:string ,name:string,descripcion:string,updated_by:string):Promise<Categories |string | any>{
         try {
             const sql = 'UPDATE categories SET name = ?, descripcion = ?, updated_by = ? WHERE id = ?'
@@ -70,6 +72,7 @@ export class CategorieRepository{
             throw new Error(`Error fetching customers: ${error.message}`);
         }
     }
+    
     public static async getAllCategoriesActive():Promise<Categories[]>{
         try {
             const sql = 'SELECT * FROM categories WHERE deleted = false';
@@ -84,6 +87,43 @@ export class CategorieRepository{
             return rows as Categories[];
         } catch (error: any) {
             throw new Error(`Error fetching customers: ${error.message}`);
+        }
+    }
+    
+    public static async deleteCategorie(id:string){
+        try {
+            const sql = 'UPDATE categories SET deleted = true WHERE id = ?';
+            const params = [id];
+            const [result]: any = await query(sql, params);
+
+            // Verifica si se actualizó algún registro
+            if (result.affectedRows === 0) {
+                throw new Error('Categories not found or no change in data');
+            }
+
+            // Retorna un mensaje de éxito junto con el ID actualizado
+            return `Categorie with ID ${id} marked as deleted successfully.`;
+
+        } catch (error: any) {
+            throw new Error(`Error deleting Categories: ${error.message}`);
+        }
+    }
+    public static async deleteCategoriePermant(id:string){
+        try {
+            const sql = 'DELETE FROM categories WHERE id = ?';
+            const params = [id];
+            const [result]: any = await query(sql, params);
+
+            // Verifica si se eliminó algún registro
+            if (result.affectedRows === 0) {
+                throw new Error('Category not found or no records deleted');
+            }
+
+            // Retorna un mensaje de éxito junto con el ID eliminado
+            return `Category with ID ${id} deleted successfully.`;
+
+        } catch (error: any) {
+            throw new Error(`Error deleting category: ${error.message}`);
         }
     }
 }
