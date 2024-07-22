@@ -1,37 +1,66 @@
 import { Request,Response } from "express";
 import { CategoriaService } from "../services/categoriesService";
+import multer from 'multer';
+import { convertImageToBase64 } from "../../helpers/convertImg";
 
-export const createCategorie = async(req:Request, res:Response) =>{
+// Configuración de multer para manejar la carga de archivos
+const upload = multer({ storage: multer.memoryStorage() });
+
+export const createCategorie = async (req: Request, res: Response) => {
     try {
-        const {name,descripcion,created_by} = req.body;
-        console.log(name,descripcion,created_by)
-        if (!name||!descripcion || !created_by) {
-            return res.status(400).json({ message: 'Missing required fields' });
-        }
-        const newCategoria = await CategoriaService.createCategorie(name,descripcion,created_by);
+        // Utilizamos multer como middleware para manejar la carga de archivos
+        upload.single('image')(req, res, async (err) => {
+            if (err) {
+                return res.status(400).json({ message: 'Error uploading file', error: err });
+            }
 
-        res.status(201).json(newCategoria);
+            const { name, descripcion, created_by } = req.body;
+            
+            if (!name || !descripcion || !created_by) {
+                return res.status(400).json({ message: 'Missing required fields' });
+            }
 
-    } catch (error:any) {
+            let base64Image = '';
+            if (req.file) {
+                base64Image = convertImageToBase64(req.file.buffer);
+            }
+
+            const newCategoria = await CategoriaService.createCategorie(name, descripcion, created_by, base64Image);
+
+            res.status(201).json(newCategoria);
+        });
+    } catch (error: any) {
         res.status(500).json({ error: error.message });
     }
-}
+};
 
-export const updateCategorie = async(req:Request, res:Response) =>{
-    try {
-        const {id} = req.params;
-        const {name,descripcion,updated_by} = req.body;
-        if (!id||!name||!descripcion || !updated_by) {
-            return res.status(400).json({ message: 'Missing required fields' });
+export const updateCategorie = async (req: Request, res: Response) => {
+    upload.single('image')(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ message: 'Error uploading file', error: err });
         }
-        const newCategoria = await CategoriaService.updateCategorie(id,name,descripcion,updated_by);
 
-        res.status(201).json(newCategoria);
+        try {
+            const { id } = req.params;
+            const { name, descripcion, updated_by } = req.body;
 
-    } catch (error:any) {
-        res.status(500).json({ error: error.message });
-    }
-}
+            if (!id || !name || !descripcion || !updated_by) {
+                return res.status(400).json({ message: 'Missing required fields' });
+            }
+
+            let base64Image = '';
+            if (req.file) {
+                base64Image = convertImageToBase64(req.file.buffer);
+            }
+
+            const updatedCategoria = await CategoriaService.updateCategorie(id, name, descripcion, updated_by, base64Image);
+
+            res.status(200).json(updatedCategoria);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+};
 
 export const getAllCustumer = async(req:Request,res:Response) => {
     try {

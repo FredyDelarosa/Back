@@ -4,7 +4,7 @@ import { validateToken } from "../../helpers/verificateToken";
 
 export const categorieRoute = express.Router();
 //Verifica el token todos las rutas que esten de bajo
-categorieRoute.use(validateToken)
+//categorieRoute.use(validateToken)
 
 categorieRoute.post("/",createCategorie);
 

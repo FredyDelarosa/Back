@@ -4,10 +4,10 @@ import { Categories } from "../models/categories";
 
 export class CategorieRepository{
 
-    public static async createCategorie(name:string,descripcion:string,created_by:string):Promise<Categories>{
+    public static async createCategorie(name:string,descripcion:string,created_by:string,image:string):Promise<Categories>{
         try {
-            const sql = 'INSERT INTO categories (name, descripcion, created_by, updated_by) VALUES (?, ?, ?, ?)';
-            const params = [name, descripcion, created_by, created_by];
+            const sql = 'INSERT INTO categories (name, descripcion, created_by, updated_by, imagen) VALUES (?, ?, ?, ?, ?)';
+            const params = [name, descripcion, created_by, created_by, image];
 
             const [result]: any = await query(sql, params);
 
@@ -24,6 +24,7 @@ export class CategorieRepository{
                 id: createdCategorieId,
                 name: name,
                 descripcion: descripcion,
+                image:image,
                 created_by: created_by,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
@@ -37,10 +38,10 @@ export class CategorieRepository{
         }
     }
 
-    public static async updateCategorie(id:string ,name:string,descripcion:string,updated_by:string):Promise<Categories |string | any>{
+    public static async updateCategorie(id:string ,name:string,descripcion:string,updated_by:string,imagen:string):Promise<Categories |string | any>{
         try {
-            const sql = 'UPDATE categories SET name = ?, descripcion = ?, updated_by = ? WHERE id = ?'
-            const params = [name,descripcion,updated_by,id]
+            const sql = 'UPDATE categories SET name = ?, descripcion = ?, updated_by = ?, imagen = ? WHERE id = ?'
+            const params = [name,descripcion,updated_by,imagen,id]
             const [result]:any = await query(sql,params);
 
             // Verifica si se actualizó algún registro
