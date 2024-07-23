@@ -8,7 +8,7 @@ const config = {
     port: 3306,
     user: 'root',
     database: 'gorras_api',
-    password: 'Miller2001',
+    password: '',
     waitForConnections: true,
     connectionLimit: 10,
 };

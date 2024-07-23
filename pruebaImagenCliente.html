@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Compras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .order {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .order-header {
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+        }
+        .detail {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .cap-image {
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detalles de Compras</h1>
+    <div id="orders-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function fetchOrders() {
+                fetch('http://localhost:3001/api/v1/order/details/compras/1')
+                    .then(response => response.json())
+                    .then(data => {
+                        renderOrders(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching orders:', error);
+                    });
+            }
+
+            function renderOrders(orders) {
+                const container = document.getElementById('orders-container');
+                orders.forEach(order => {
+                    const orderElement = document.createElement('div');
+                    orderElement.className = 'order';
+
+                    const orderHeader = document.createElement('div');
+                    orderHeader.className = 'order-header';
+                    orderHeader.innerHTML = `
+                        <h2>Orden #${order.order_id}</h2>
+                        <p>Fecha: ${new Date(order.order_date).toLocaleString()}</p>
+                    `;
+                    orderElement.appendChild(orderHeader);
+
+                    order.details.forEach(detail => {
+                        const detailElement = document.createElement('div');
+                        detailElement.className = 'detail';
+                        detailElement.innerHTML = `
+                            <img src="${detail.cap.imagen}" alt="${detail.cap.name}" class="cap-image">
+                            <h3>${detail.cap.name}</h3>
+                            <p>Precio: $${detail.cap.price}</p>
+                            <p>Cantidad: ${detail.cantidad}</p>
+                            <p>Talla: ${detail.size.description}</p>
+                            <p>Tipo: ${detail.type_cap.tipo}</p>
+                            <p>Subtotal: $${(detail.cantidad * parseFloat(detail.precio_unitario)).toFixed(2)}</p>
+                        `;
+                        orderElement.appendChild(detailElement);
+                    });
+
+                    container.appendChild(orderElement);
+                });
+            }
+
+            fetchOrders();
+        });
+    </script>
+</body>
+</html>

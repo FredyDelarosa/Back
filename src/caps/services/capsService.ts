@@ -69,5 +69,13 @@ export class CapsService{
             throw new Error(`Error al eliminar cap: ${error.message}`);
         }
     }
+    public static async getInfoAllCap(id:string){
+        try {
+            return await CapsRepository.getInfoAllCap(id);
+
+        } catch (error:any) {
+            throw new Error(`Error al obtener la toda la informacion de la gorra: ${error.message}`);
+        }
+    }
 }
 

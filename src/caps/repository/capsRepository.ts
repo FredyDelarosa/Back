@@ -159,5 +159,46 @@ export class CapsRepository{
             throw new Error(`Error deleting Categories: ${error.message}`);
         }
     }
+    public static async getInfoAllCap(id: string): Promise<any> {
+        try {
+            const sql = `
+                SELECT 
+                    c.id AS cap_id,
+                    c.name AS cap_name,
+                    c.price AS cap_price,
+                    c.imagen AS cap_imagen,
+                    c.created_by AS cap_created_by,
+                    c.updated_by AS cap_updated_by,
+                    c.created_at AS cap_created_at,
+                    c.updated_at AS cap_updated_at,
+                    tc.id AS type_cap_id,
+                    tc.tipo AS type_cap_tipo,
+                    s.id AS size_id,
+                    s.description AS size_description,
+                    i.id AS inventary_id,
+                    i.cantidad AS inventary_cantidad
+                FROM 
+                    caps c
+                LEFT JOIN TypeCap tc ON c.id = tc.gorra_id AND tc.deleted = FALSE
+                LEFT JOIN Size s ON tc.talla_id = s.id AND s.deleted = FALSE
+                LEFT JOIN Inventary i ON c.id = i.gorra_id AND s.id = i.talla_id AND i.deleted = FALSE
+                WHERE 
+                    c.id = ?
+                    AND c.deleted = FALSE
+            `;
+            const params = [id];
+            const [rows]: any = await query(sql, params);
+    
+            // Verifica si se encontraron registros
+            if (rows.length === 0) {
+                throw new Error('Cap not found');
+            }
+    
+            // Retorna los registros encontrados
+            return rows;
+        } catch (error: any) {
+            throw new Error(`Error fetching cap: ${error.message}`);
+        }
+    }
 }
     
